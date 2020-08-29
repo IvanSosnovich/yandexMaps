@@ -13,30 +13,6 @@ protocol StoryboardIdentifiable {
     static var storyboardIdentifier: String { get }
 }
 
-enum NavigationBarState {
-    case hide
-    case onlyBackButton
-    case show
-}
-
-extension UIViewController {
-    
-    func configureNavigationBar(state: NavigationBarState) {
-        switch state {
-        case .hide:
-            self.navigationController?.navigationBar.isHidden = true
-        
-        case .show:
-            self.navigationController?.navigationBar.isHidden = false
-        
-        case .onlyBackButton:
-            self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-            self.navigationController?.navigationBar.shadowImage = UIImage()
-            self.navigationController?.navigationBar.isTranslucent = true
-            self.navigationController?.navigationBar.topItem?.title = ""
-        }
-    }
-}
 
 extension UINavigationController {
     

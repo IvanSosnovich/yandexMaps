@@ -12,33 +12,20 @@ import YandexMapKit
 
 class MapsViewController: UIViewController {
     
-    var coordinate: LocationAdres?
+    var coordinate = LocationAddressBook(name: "no location", latitude: 0, longitude: 0)
     let managerLocation = CLLocationManager()
-    @IBOutlet weak var infoLabel: UILabel!
-    @IBOutlet weak var moveButton: UIButton!
-    
-    
     @IBOutlet weak var mapView: YMKMapView!
+    let moveButton = UIButton(type: .system)
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         managerLocation.delegate = self
         managerLocation.startUpdatingLocation()
         navigationController?.navigationBar.isHidden = false
-        navigationItem.title = "\(coordinate!.name)"
-        infoLabel.isHidden = true
-        moveButton.isHidden = true
+        navigationItem.title = "\(coordinate.name)"
     }
     
-    
-    @IBAction func moveToLocation(_ sender: Any) {
-        let location = CLLocation(latitude: coordinate!.latitude, longitude: coordinate!.longitude)
-        moveButton.isHidden = true
-        infoLabel.isHidden = true
-        mapView.mapWindow.map.move(with: .init(target: YMKPoint(), zoom: 40, azimuth: 0, tilt: 0)
-        )
-        moveMaps(to: location)
-    }
     
 }
 // MARK: - user location service
@@ -88,9 +75,8 @@ extension MapsViewController {
             animationType: YMKAnimation(type: YMKAnimationType.smooth, duration: 5),
             cameraCallback: nil)
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            self.moveButton.setTitle("\(self.coordinate!.name)", for: .normal)
-            self.moveButton.isHidden = false
-            self.mapView.addSubview(self.moveButton)
+           //self.moveButton.setTitle("\(self.coordinate!.name)", for: .normal)
+         
             self.setupInfoView(with: location)
         }
     }
@@ -102,29 +88,66 @@ extension MapsViewController {
         let geogoder = CLGeocoder()
         
         geogoder.reverseGeocodeLocation(location) { (placeMark, _) in
-            var adresUser = ""
             guard let place = placeMark else {return}
-            for placeUser in place {
-                
-                if placeUser.country != nil {
-                    adresUser = placeUser.country!
-                }
-                
-                if placeUser.subLocality != nil {
-                    adresUser += ("\n \(placeUser.subLocality!)")
-                }
-                
-                if placeUser.thoroughfare != nil {
-                    adresUser += ("\n \(placeUser.thoroughfare!)")
-                }
-                
-                if placeUser.subThoroughfare != nil {
-                    adresUser += " \(placeUser.subThoroughfare!) "
-                }
-            }
-            self.infoLabel.text = adresUser
-            self.infoLabel.isHidden = false
-            self.mapView.addSubview(self.infoLabel)
+            let lastPlace = place.last
+                guard let userPlace = lastPlace?.thoroughfare,
+                      let userPlaceInfo = lastPlace?.subThoroughfare
+                else {return}
+                let address = userPlace + " " + userPlaceInfo
+           
+            self.greatLabelInfo(with: address, for: location)
+            
         }
     }
+}
+
+
+//MARK: - Great object map
+
+extension MapsViewController {
+    func greatLabelInfo(with text: String, for location: CLLocation) {
+        let mapObjects = mapView.mapWindow.map.mapObjects
+        let textView =
+                   UITextView(frame: CGRect(x: 0, y: 0, width: 200, height: 80))
+        textView.isOpaque = false
+        textView.backgroundColor = UIColor.clear.withAlphaComponent(0.0)
+        textView.textAlignment = .center
+        textView.text = text
+        textView.textColor = UIColor.black
+        
+        
+        guard let provider = YRTViewProvider(uiView: textView) else {
+            return
+        }
+        let viewPlacemark = mapObjects.addPlacemark(
+            with: YMKPoint(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude),
+            view: provider);
+            provider.snapshot()
+            viewPlacemark.setViewWithView(provider)
+        mapView.mapWindow.map.mapObjects.addPlacemark(with: YMKPoint(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude))
+        setupButton()
+    }
+}
+
+extension MapsViewController {
+    
+    func setupButton() {
+        moveButton.frame = CGRect(x: mapView.bounds.width/2, y: mapView.bounds.height - 50, width: 80, height: 40)
+        moveButton.setTitle(coordinate.name, for: .normal)
+        moveButton.tintColor = .white
+        moveButton.addTarget(self, action: #selector(noveActive), for: .touchUpInside)
+        moveButton.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        mapView.addSubview(moveButton)
+    }
+    
+    
+    @objc func noveActive() {
+        let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        mapView.mapWindow.map.move(with: .init(target: YMKPoint(), zoom: 40, azimuth: 0, tilt: 0)
+        )
+        moveMaps(to: location)
+        moveButton.isHidden = true
+    }
+    
+    
 }

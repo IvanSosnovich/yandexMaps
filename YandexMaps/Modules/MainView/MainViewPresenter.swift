@@ -9,8 +9,8 @@
 import UIKit
 
 protocol MainViewPresenterProtocol: class {
-    func returnAdresBook() -> [LocationAdres]
-    func showMap(with coordinate: LocationAdres)
+    func returnAdresBook() -> [LocationAddressBook]
+    func showMap(with coordinate: LocationAddressBook)
 }
 
 class MainViewPresenter {
@@ -24,11 +24,11 @@ class MainViewPresenter {
 extension MainViewPresenter: MainViewPresenterProtocol {
     
     
-    func returnAdresBook() -> [LocationAdres] {
+    func returnAdresBook() -> [LocationAddressBook] {
         return interactor.returnAdresBook()
     }
     
-    func showMap(with coordinate: LocationAdres) {
+    func showMap(with coordinate: LocationAddressBook) {
         router.moveMap(with: coordinate)
     }
     

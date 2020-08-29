@@ -23,12 +23,15 @@ class MainTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
-    func setupCell(for item: LocationAdres) {
-        nameCell.text = item.name
+    func setupCell(for item: LocationAddressBook?) {
+        guard let model = item else {
+            return
+        }
+        nameCell.text = model.name
         coordinate.text = """
         Координаты:
-        latitude: \(item.latitude)
-        longitude: \(item.longitude)
+        latitude: \(model.latitude)
+        longitude: \(model.longitude)
         """
     }
     

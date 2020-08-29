@@ -8,18 +8,18 @@
 
 import Foundation
 
-class AdresModel {
+class AddressBook {
     
-    static let shared = AdresModel()
+    static let shared = AddressBook()
     private init () {}
     
-    var adresGeo = [LocationAdres(name: "Go Jobs", latitude: 55.789536, longitude: 37.499162),
-                    LocationAdres(name: "Go Friends", latitude: 59.925746, longitude: 32.320117),
-                    LocationAdres(name: "Go Shops", latitude: 55.794217, longitude: 37.592608)
+    var adresGeo = [LocationAddressBook(name: "Go Jobs", latitude: 55.789536, longitude: 37.499162),
+                    LocationAddressBook(name: "Go Friends", latitude: 59.925746, longitude: 32.320117),
+                    LocationAddressBook(name: "Go Shops", latitude: 55.794217, longitude: 37.592608)
     ]
 }
 
-class LocationAdres {
+class LocationAddressBook {
     var name : String
     var latitude: Double
     var longitude: Double

@@ -16,7 +16,7 @@ protocol MainViewProtocol: class {
 class MainView: UIViewController {
     
     private let assembler: MainVIewAssemblerProtocol = MainViewAssembler()
-    var presenter: MainViewPresenterProtocol!
+    var presenter: MainViewPresenterProtocol?
     
     @IBOutlet weak var mapsTable: UITableView!
     
@@ -37,12 +37,19 @@ extension MainView: MainViewProtocol {
 extension MainView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter.returnAdresBook().count
+        guard let count = presenter?.returnAdresBook().count else {
+            return 0
+        }
+        return count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MainTableViewCell") as? MainTableViewCell
-        cell?.setupCell(for: presenter.returnAdresBook()[indexPath.row])
+        guard let modelCell = presenter?.returnAdresBook()[indexPath.row] else {
+            cell?.setupCell(for: nil)
+            return cell!
+        }
+        cell?.setupCell(for: modelCell)
         return cell!
     }
     
@@ -54,6 +61,7 @@ extension MainView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let presenter = presenter else {return}
         presenter.showMap(with: presenter.returnAdresBook()[indexPath.row])
     }
     

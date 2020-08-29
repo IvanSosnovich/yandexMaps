@@ -10,7 +10,7 @@ import UIKit
 
 class BaseRouter: NSObject {
     
-    private weak var controller: UIViewController!
+    private var controller: UIViewController
     
     required init(controller: UIViewController) {
         self.controller = controller

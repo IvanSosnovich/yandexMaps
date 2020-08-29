@@ -7,6 +7,5 @@ target 'YandexMaps' do
 
   # Pods for YandexMaps
   # Основная библиотека MapKit.
-  pod ‘YandexMapKit’, ’3.5’
-  pod ‘YandexMapKitSearch’, ’3.5’
+  # pod ‘YandexMapKit’, ’3.5’
 end

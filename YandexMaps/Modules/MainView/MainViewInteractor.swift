@@ -9,14 +9,14 @@
 import UIKit
 
 protocol MainViewInteractorProtocol: class  {
-    func returnAdresBook() -> [LocationAdres]
+    func returnAdresBook() -> [LocationAddressBook]
 }
 
 final class MainViewInteractor: MainViewInteractorProtocol {
     
-    let adresBook = AdresModel.shared
+    let adresBook = AddressBook.shared
     
-    func returnAdresBook() -> [LocationAdres] {
+    func returnAdresBook() -> [LocationAddressBook] {
         return adresBook.adresGeo
     }
     

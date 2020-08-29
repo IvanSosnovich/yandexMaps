@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 
 protocol MainViewRouterProtocol: class {
-    func moveMap(with adres: LocationAdres)
+    func moveMap(with adres: LocationAddressBook)
 }
 
 class MainViewRouter: BaseRouter {
@@ -19,13 +19,13 @@ class MainViewRouter: BaseRouter {
 
 extension MainViewRouter: MainViewRouterProtocol {
     
-    func moveMap(with coordinate: LocationAdres) {
+    func moveMap(with coordinate: LocationAddressBook) {
         guard let vc = UIStoryboard(name: "MapsView", bundle: nil)
             .instantiateViewController(identifier: "MapsViewController") as? MapsViewController
         
             else {return}
         vc.coordinate = coordinate
-        vc.modalPresentationStyle = .fullScreen
+        vc.modalPresentationStyle = .pageSheet
         self.show(vc)
         
     }
